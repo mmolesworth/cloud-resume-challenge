@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mark Molesworth - Resume</title>
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-    <link rel="stylesheet" href="styles/resume.css">
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/styles/resume.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -14,13 +14,24 @@
     <header>
         <h1>Mark Molesworth</h1>
         <address>
-            <a href="tel:+12407530605" aria-label="Phone: 240-753-0605" target="_blank" rel="noopener noreferrer">240.753.0605</a> |
-            <a href="mailto:m.molesworth@proton.me" aria-label="Email: m.molesworth@proton.me" target="_blank" rel="noopener noreferrer">m.molesworth@proton.me</a> |
-            <a href="https://www.linkedin.com/in/mark-molesworth" aria-label="LinkedIn profile for Mark Molesworth" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a href="tel:+12407530605" aria-label="Phone: 240-753-0605">240.753.0605</a> |
+            <a href="mailto:m.molesworth@proton.me" aria-label="Email: m.molesworth@proton.me">m.molesworth@proton.me</a> |
+            <a href="https://www.linkedin.com/in/mark-molesworth" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile for Mark Molesworth (opens in new tab)">LinkedIn</a>
         </address>
     </header>
 
     <main id="main-content">
+        <div id="visitor-counter" 
+             hx-get="{{API_URL_PLACEHOLDER}}" 
+             hx-trigger="load"
+             hx-swap="innerHTML"
+             aria-live="polite"
+             aria-label="Page view counter">
+            <span class="htmx-indicator" aria-hidden="true">
+                <span class="visually-hidden">Loading visitor count...</span>
+            </span>
+        </div>
+
         <section id="professional-statement" aria-labelledby="professional-statement-heading">
             <h2 id="professional-statement-heading">Professional Statement</h2>
             <p>
@@ -164,5 +175,21 @@
             </article>
         </section>
     </main>
+
+    <script>
+        // Handle HTMX errors - show fallback for visitor counter
+        document.body.addEventListener('htmx:responseError', function(event) {
+            if (event.detail.target.id === 'visitor-counter') {
+                event.detail.target.innerHTML = '<p class="error">This page has been viewed — times</p>';
+            }
+        });
+
+        // Also handle network errors
+        document.body.addEventListener('htmx:sendError', function(event) {
+            if (event.detail.target.id === 'visitor-counter') {
+                event.detail.target.innerHTML = '<p class="error">This page has been viewed — times</p>';
+            }
+        });
+    </script>
 </body>
 </html>
